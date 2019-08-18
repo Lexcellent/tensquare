@@ -86,6 +86,11 @@ public class LabelService {
 		return labelDao.findAll(new Specification<Label>() {
 
 			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			/**
 			 *
 			 * @param root  根对象，也就是要把条件封装到哪个对象中。 where 类名 = label.getid
 			 * @param query 封装的都是查询的关键字，比如 group by order by 等
