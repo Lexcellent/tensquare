@@ -1,24 +1,28 @@
 package com.tensquare.recruit.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import util.IdWorker;
+
 import com.tensquare.recruit.dao.RecruitDao;
 import com.tensquare.recruit.pojo.Recruit;
-
-import util.IdWorker;
 
 /**
  * 服务层
@@ -30,23 +34,22 @@ import util.IdWorker;
 public class RecruitService {
 
 	@Autowired
-	private RecruitDao gatheringDao;
-
+	private RecruitDao RecruitDao;
+	
 	@Autowired
 	private IdWorker idWorker;
 
 	/**
 	 * 查询全部列表
-	 * 
 	 * @return
 	 */
 	public List<Recruit> findAll() {
-		return gatheringDao.findAll();
+		return RecruitDao.findAll();
 	}
 
+	
 	/**
 	 * 条件查询+分页
-	 * 
 	 * @param whereMap
 	 * @param page
 	 * @param size
@@ -54,62 +57,57 @@ public class RecruitService {
 	 */
 	public Page<Recruit> findSearch(Map whereMap, int page, int size) {
 		Specification<Recruit> specification = createSpecification(whereMap);
-		PageRequest pageRequest = PageRequest.of(page - 1, size);
-		return gatheringDao.findAll(specification, pageRequest);
+		PageRequest pageRequest =  PageRequest.of(page-1, size);
+		return RecruitDao.findAll(specification, pageRequest);
 	}
 
+	
 	/**
 	 * 条件查询
-	 * 
 	 * @param whereMap
 	 * @return
 	 */
 	public List<Recruit> findSearch(Map whereMap) {
 		Specification<Recruit> specification = createSpecification(whereMap);
-		return gatheringDao.findAll(specification);
+		return RecruitDao.findAll(specification);
 	}
 
 	/**
 	 * 根据ID查询实体
-	 * 
 	 * @param id
 	 * @return
 	 */
 	public Recruit findById(String id) {
-		return gatheringDao.findById(id).get();
+		return RecruitDao.findById(id).get();
 	}
 
 	/**
 	 * 增加
-	 * 
-	 * @param gathering
+	 * @param Recruit
 	 */
-	public void add(Recruit gathering) {
-		gathering.setId(idWorker.nextId() + "");
-		gatheringDao.save(gathering);
+	public void add(Recruit Recruit) {
+		Recruit.setId( idWorker.nextId()+"" );
+		RecruitDao.save(Recruit);
 	}
 
 	/**
 	 * 修改
-	 * 
-	 * @param gathering
+	 * @param Recruit
 	 */
-	public void update(Recruit gathering) {
-		gatheringDao.save(gathering);
+	public void update(Recruit Recruit) {
+		RecruitDao.save(Recruit);
 	}
 
 	/**
 	 * 删除
-	 * 
 	 * @param id
 	 */
 	public void deleteById(String id) {
-		gatheringDao.deleteById(id);
+		RecruitDao.deleteById(id);
 	}
 
 	/**
 	 * 动态条件构建
-	 * 
 	 * @param searchMap
 	 * @return
 	 */
@@ -120,53 +118,60 @@ public class RecruitService {
 			@Override
 			public Predicate toPredicate(Root<Recruit> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
-				// 编号
-				if (searchMap.get("id") != null && !"".equals(searchMap.get("id"))) {
-					predicateList
-							.add(cb.like(root.get("id").as(String.class), "%" + (String) searchMap.get("id") + "%"));
-				}
-				// 活动名称
-				if (searchMap.get("name") != null && !"".equals(searchMap.get("name"))) {
-					predicateList.add(
-							cb.like(root.get("name").as(String.class), "%" + (String) searchMap.get("name") + "%"));
-				}
-				// 大会简介
-				if (searchMap.get("summary") != null && !"".equals(searchMap.get("summary"))) {
-					predicateList.add(cb.like(root.get("summary").as(String.class),
-							"%" + (String) searchMap.get("summary") + "%"));
-				}
-				// 详细说明
-				if (searchMap.get("detail") != null && !"".equals(searchMap.get("detail"))) {
-					predicateList.add(
-							cb.like(root.get("detail").as(String.class), "%" + (String) searchMap.get("detail") + "%"));
-				}
-				// 主办方
-				if (searchMap.get("sponsor") != null && !"".equals(searchMap.get("sponsor"))) {
-					predicateList.add(cb.like(root.get("sponsor").as(String.class),
-							"%" + (String) searchMap.get("sponsor") + "%"));
-				}
-				// 活动图片
-				if (searchMap.get("image") != null && !"".equals(searchMap.get("image"))) {
-					predicateList.add(
-							cb.like(root.get("image").as(String.class), "%" + (String) searchMap.get("image") + "%"));
-				}
-				// 举办地点
-				if (searchMap.get("address") != null && !"".equals(searchMap.get("address"))) {
-					predicateList.add(cb.like(root.get("address").as(String.class),
-							"%" + (String) searchMap.get("address") + "%"));
-				}
-				// 是否可见
-				if (searchMap.get("state") != null && !"".equals(searchMap.get("state"))) {
-					predicateList.add(
-							cb.like(root.get("state").as(String.class), "%" + (String) searchMap.get("state") + "%"));
-				}
-				// 城市
-				if (searchMap.get("city") != null && !"".equals(searchMap.get("city"))) {
-					predicateList.add(
-							cb.like(root.get("city").as(String.class), "%" + (String) searchMap.get("city") + "%"));
-				}
-
-				return cb.and(predicateList.toArray(new Predicate[predicateList.size()]));
+                // 编号
+                if (searchMap.get("id")!=null && !"".equals(searchMap.get("id"))) {
+                	predicateList.add(cb.like(root.get("id").as(String.class), "%"+(String)searchMap.get("id")+"%"));
+                }
+                // 活动名称
+                if (searchMap.get("jobname")!=null && !"".equals(searchMap.get("jobname"))) {
+                	predicateList.add(cb.like(root.get("jobname").as(String.class), "%"+(String)searchMap.get("jobname")+"%"));
+                }
+                // 大会简介
+                if (searchMap.get("salary")!=null && !"".equals(searchMap.get("salary"))) {
+                	predicateList.add(cb.like(root.get("salary").as(String.class), "%"+(String)searchMap.get("salary")+"%"));
+                }
+                // 详细说明
+                if (searchMap.get("condition")!=null && !"".equals(searchMap.get("condition"))) {
+                	predicateList.add(cb.like(root.get("condition").as(String.class), "%"+(String)searchMap.get("condition")+"%"));
+                }
+                // 主办方
+                if (searchMap.get("education")!=null && !"".equals(searchMap.get("education"))) {
+                	predicateList.add(cb.like(root.get("education").as(String.class), "%"+(String)searchMap.get("education")+"%"));
+                }
+                // 活动图片
+                if (searchMap.get("type")!=null && !"".equals(searchMap.get("type"))) {
+                	predicateList.add(cb.like(root.get("type").as(String.class), "%"+(String)searchMap.get("type")+"%"));
+                }
+                // 开始时间
+                if (searchMap.get("address")!=null && !"".equals(searchMap.get("address"))) {
+                	predicateList.add(cb.like(root.get("address").as(String.class), "%"+(String)searchMap.get("address")+"%"));
+                }
+                // 开始时间
+                if (searchMap.get("eid")!=null && !"".equals(searchMap.get("eid"))) {
+                	predicateList.add(cb.like(root.get("eid").as(String.class), "%"+(String)searchMap.get("eid")+"%"));
+                }
+                // 举办地点
+                if (searchMap.get("state")!=null && !"".equals(searchMap.get("state"))) {
+                	predicateList.add(cb.like(root.get("state").as(String.class), "%"+(String)searchMap.get("state")+"%"));
+                }
+                // 是否可见
+                if (searchMap.get("url")!=null && !"".equals(searchMap.get("url"))) {
+                	predicateList.add(cb.like(root.get("url").as(String.class), "%"+(String)searchMap.get("url")+"%"));
+                }
+                // 是否可见
+                if (searchMap.get("label")!=null && !"".equals(searchMap.get("label"))) {
+                	predicateList.add(cb.like(root.get("label").as(String.class), "%"+(String)searchMap.get("label")+"%"));
+                }
+                // 是否可见
+                if (searchMap.get("content1")!=null && !"".equals(searchMap.get("content1"))) {
+                	predicateList.add(cb.like(root.get("content1").as(String.class), "%"+(String)searchMap.get("content1")+"%"));
+                }
+                // 是否可见
+                if (searchMap.get("content2")!=null && !"".equals(searchMap.get("content2"))) {
+                	predicateList.add(cb.like(root.get("content2").as(String.class), "%"+(String)searchMap.get("content2")+"%"));
+                }
+				
+				return cb.and( predicateList.toArray(new Predicate[predicateList.size()]));
 
 			}
 		};

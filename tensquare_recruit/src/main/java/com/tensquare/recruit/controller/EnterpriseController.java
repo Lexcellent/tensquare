@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tensquare.recruit.pojo.Recruit;
-import com.tensquare.recruit.service.RecruitService;
+import com.tensquare.recruit.pojo.Enterprise;
+import com.tensquare.recruit.service.EnterpriseService;
 
 import entity.PageResult;
 import entity.Result;
@@ -24,11 +24,11 @@ import entity.StatusCode;
  */
 @RestController
 @CrossOrigin
-@RequestMapping("/Recruit")
-public class RecruitController {
+@RequestMapping("/Enterprise")
+public class EnterpriseController {
 
 	@Autowired
-	private RecruitService RecruitService;
+	private EnterpriseService EnterpriseService;
 	
 	
 	/**
@@ -37,7 +37,7 @@ public class RecruitController {
 	 */
 	@RequestMapping(method= RequestMethod.GET)
 	public Result findAll(){
-		return new Result(true,StatusCode.OK,"查询成功",RecruitService.findAll());
+		return new Result(true,StatusCode.OK,"查询成功",EnterpriseService.findAll());
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class RecruitController {
 	 */
 	@RequestMapping(value="/{id}",method= RequestMethod.GET)
 	public Result findById(@PathVariable String id){
-		return new Result(true,StatusCode.OK,"查询成功",RecruitService.findById(id));
+		return new Result(true,StatusCode.OK,"查询成功",EnterpriseService.findById(id));
 	}
 
 
@@ -60,8 +60,8 @@ public class RecruitController {
 	 */
 	@RequestMapping(value="/search/{page}/{size}",method=RequestMethod.POST)
 	public Result findSearch(@RequestBody Map searchMap , @PathVariable int page, @PathVariable int size){
-		Page<Recruit> pageList = RecruitService.findSearch(searchMap, page, size);
-		return  new Result(true,StatusCode.OK,"查询成功",  new PageResult<Recruit>(pageList.getTotalElements(), pageList.getContent()) );
+		Page<Enterprise> pageList = EnterpriseService.findSearch(searchMap, page, size);
+		return  new Result(true,StatusCode.OK,"查询成功",  new PageResult<Enterprise>(pageList.getTotalElements(), pageList.getContent()) );
 	}
 
 	/**
@@ -71,27 +71,27 @@ public class RecruitController {
      */
     @RequestMapping(value="/search",method = RequestMethod.POST)
     public Result findSearch( @RequestBody Map searchMap){
-        return new Result(true,StatusCode.OK,"查询成功",RecruitService.findSearch(searchMap));
+        return new Result(true,StatusCode.OK,"查询成功",EnterpriseService.findSearch(searchMap));
     }
 	
 	/**
 	 * 增加
-	 * @param Recruit
+	 * @param Enterprise
 	 */
 	@RequestMapping(method=RequestMethod.POST)
-	public Result add(@RequestBody Recruit Recruit  ){
-		RecruitService.add(Recruit);
+	public Result add(@RequestBody Enterprise Enterprise  ){
+		EnterpriseService.add(Enterprise);
 		return new Result(true,StatusCode.OK,"增加成功");
 	}
 	
 	/**
 	 * 修改
-	 * @param Recruit
+	 * @param Enterprise
 	 */
 	@RequestMapping(value="/{id}",method= RequestMethod.PUT)
-	public Result update(@RequestBody Recruit Recruit, @PathVariable String id ){
-		Recruit.setId(id);
-		RecruitService.update(Recruit);		
+	public Result update(@RequestBody Enterprise Enterprise, @PathVariable String id ){
+		Enterprise.setId(id);
+		EnterpriseService.update(Enterprise);		
 		return new Result(true,StatusCode.OK,"修改成功");
 	}
 	
@@ -101,7 +101,7 @@ public class RecruitController {
 	 */
 	@RequestMapping(value="/{id}",method= RequestMethod.DELETE)
 	public Result delete(@PathVariable String id ){
-		RecruitService.deleteById(id);
+		EnterpriseService.deleteById(id);
 		return new Result(true,StatusCode.OK,"删除成功");
 	}
 	

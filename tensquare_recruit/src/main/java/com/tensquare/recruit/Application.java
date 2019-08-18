@@ -1,10 +1,8 @@
 package com.tensquare.recruit;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import util.IdWorker;
-
 @SpringBootApplication
 public class Application {
 
@@ -13,8 +11,8 @@ public class Application {
 	}
 
 	@Bean
-	public IdWorker idWorkker() {
+	public IdWorker idWorkker(){
 		return new IdWorker(1, 1);
 	}
-
+	
 }
