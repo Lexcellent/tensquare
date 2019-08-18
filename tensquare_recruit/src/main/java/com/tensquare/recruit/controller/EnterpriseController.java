@@ -1,4 +1,5 @@
 package com.tensquare.recruit.controller;
+
 import java.util.List;
 import java.util.Map;
 
@@ -17,92 +18,105 @@ import com.tensquare.recruit.service.EnterpriseService;
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+
 /**
  * 控制器层
+ * 
  * @author Administrator
  *
  */
 @RestController
 @CrossOrigin
-@RequestMapping("/Enterprise")
+@RequestMapping("/enterprise")
 public class EnterpriseController {
 
 	@Autowired
-	private EnterpriseService EnterpriseService;
-	
-	
+	private EnterpriseService enterpriseService;
+
+	@RequestMapping(value = "/search/hotlist", method = RequestMethod.GET)
+	public Result hotList() {
+		return new Result(true, StatusCode.OK, "查询成功", enterpriseService.findByIshot("1"));
+	}
+
 	/**
 	 * 查询全部数据
+	 * 
 	 * @return
 	 */
-	@RequestMapping(method= RequestMethod.GET)
-	public Result findAll(){
-		return new Result(true,StatusCode.OK,"查询成功",EnterpriseService.findAll());
+	@RequestMapping(method = RequestMethod.GET)
+	public Result findAll() {
+		return new Result(true, StatusCode.OK, "查询成功", enterpriseService.findAll());
 	}
-	
+
 	/**
 	 * 根据ID查询
+	 * 
 	 * @param id ID
 	 * @return
 	 */
-	@RequestMapping(value="/{id}",method= RequestMethod.GET)
-	public Result findById(@PathVariable String id){
-		return new Result(true,StatusCode.OK,"查询成功",EnterpriseService.findById(id));
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public Result findById(@PathVariable String id) {
+		return new Result(true, StatusCode.OK, "查询成功", enterpriseService.findById(id));
 	}
-
 
 	/**
 	 * 分页+多条件查询
+	 * 
 	 * @param searchMap 查询条件封装
-	 * @param page 页码
-	 * @param size 页大小
+	 * @param page      页码
+	 * @param size      页大小
 	 * @return 分页结果
 	 */
-	@RequestMapping(value="/search/{page}/{size}",method=RequestMethod.POST)
-	public Result findSearch(@RequestBody Map searchMap , @PathVariable int page, @PathVariable int size){
-		Page<Enterprise> pageList = EnterpriseService.findSearch(searchMap, page, size);
-		return  new Result(true,StatusCode.OK,"查询成功",  new PageResult<Enterprise>(pageList.getTotalElements(), pageList.getContent()) );
+	@RequestMapping(value = "/search/{page}/{size}", method = RequestMethod.POST)
+	public Result findSearch(@RequestBody Map searchMap, @PathVariable int page, @PathVariable int size) {
+		Page<Enterprise> pageList = enterpriseService.findSearch(searchMap, page, size);
+		return new Result(true, StatusCode.OK, "查询成功",
+				new PageResult<Enterprise>(pageList.getTotalElements(), pageList.getContent()));
 	}
 
 	/**
-     * 根据条件查询
-     * @param searchMap
-     * @return
-     */
-    @RequestMapping(value="/search",method = RequestMethod.POST)
-    public Result findSearch( @RequestBody Map searchMap){
-        return new Result(true,StatusCode.OK,"查询成功",EnterpriseService.findSearch(searchMap));
-    }
-	
+	 * 根据条件查询
+	 * 
+	 * @param searchMap
+	 * @return
+	 */
+	@RequestMapping(value = "/search", method = RequestMethod.POST)
+	public Result findSearch(@RequestBody Map searchMap) {
+		return new Result(true, StatusCode.OK, "查询成功", enterpriseService.findSearch(searchMap));
+	}
+
 	/**
 	 * 增加
+	 * 
 	 * @param Enterprise
 	 */
-	@RequestMapping(method=RequestMethod.POST)
-	public Result add(@RequestBody Enterprise Enterprise  ){
-		EnterpriseService.add(Enterprise);
-		return new Result(true,StatusCode.OK,"增加成功");
+	@RequestMapping(method = RequestMethod.POST)
+	public Result add(@RequestBody Enterprise Enterprise) {
+		enterpriseService.add(Enterprise);
+		return new Result(true, StatusCode.OK, "增加成功");
 	}
-	
+
 	/**
 	 * 修改
+	 * 
 	 * @param Enterprise
 	 */
-	@RequestMapping(value="/{id}",method= RequestMethod.PUT)
-	public Result update(@RequestBody Enterprise Enterprise, @PathVariable String id ){
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public Result update(@RequestBody Enterprise Enterprise, @PathVariable String id) {
 		Enterprise.setId(id);
-		EnterpriseService.update(Enterprise);		
-		return new Result(true,StatusCode.OK,"修改成功");
+		enterpriseService.update(Enterprise);
+		return new Result(true, StatusCode.OK, "修改成功");
 	}
-	
+
 	/**
 	 * 删除
+	 * 
 	 * @param id
 	 */
-	@RequestMapping(value="/{id}",method= RequestMethod.DELETE)
-	public Result delete(@PathVariable String id ){
-		EnterpriseService.deleteById(id);
-		return new Result(true,StatusCode.OK,"删除成功");
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public Result delete(@PathVariable String id) {
+		enterpriseService.deleteById(id);
+		return new Result(true, StatusCode.OK, "删除成功");
 	}
-	
+
 }
