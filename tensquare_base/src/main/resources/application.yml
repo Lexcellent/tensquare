@@ -12,9 +12,9 @@ spring:
     database: mysql
     show-sql: true
     generate-ddl: true
-eureka:
-  client:
-    service-url:
-      defaultZone: http://127.0.0.1:6868/eureka/
-  instance:
-    prefer-ip-address: true    #模块上线布置，可以跨域访问
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://127.0.0.1:6868/eureka/
+#  instance:
+#    prefer-ip-address: true    #模块上线布置，可以跨域访问

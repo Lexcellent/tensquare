@@ -73,7 +73,6 @@ public class LabelService {
 	 * @param id
 	 */
 	public void deleteById(String id) {
-
 		labelDao.deleteById(id);
 	}
 
