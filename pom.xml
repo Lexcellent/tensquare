@@ -87,5 +87,6 @@
 		<module>tensquare_qa</module>
 		<module>tensquare_article</module>
 		<module>tensquare_gathering</module>
+		<module>tensquare_spit</module>
 	</modules>
 </project>
